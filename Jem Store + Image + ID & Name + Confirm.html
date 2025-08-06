@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jem Store</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+    body, html {
+      margin:0; padding:0; height:100%;
+      font-family: 'Poppins', sans-serif;
+      background: url('https://drive.google.com/uc?export=view&id=1r3GKRDouFIuJxQtd-ipN7bEyA5PIFdC7') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      color: #FFD700; /* Gold */
+      text-shadow: 1px 1px 4px #000;
+    }
+    img#mainImage {
+      max-width: 80vw;
+      max-height: 200px;
+      object-fit: contain;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #ffd700aa;
+    }
+    form {
+      width: 90vw;
+      max-width: 400px;
+      background: rgba(0,0,0,0.5);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #ffd700aa;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      font-size: 1.1rem;
+      color: #ffdd00;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 15px;
+      background-color: #ffcc00;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      color: #000;
+      box-shadow: 0 0 15px #ffcc0088;
+    }
+    button:hover {
+      background-color: #e6b800;
+    }
+
+    @media (max-width: 400px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Jem Store</h1>
+  <img id="mainImage" src="https://drive.google.com/uc?export=view&id=1vzV9d6hB1d54kXsJWH-iBI6axoJkICXK" alt="Jem Image" />
+
+  <form id="userForm">
+    <label for="gameID">Your Game ID</label>
+    <input type="text" id="gameID" name="gameID" placeholder="Game ID" required />
+
+    <label for="userName">Your Name</label>
+    <input type="text" id="userName" name="userName" placeholder="Name" required />
+
+    <button type="submit">Confirm</button>
+  </form>
+
+  <script>
+    const form = document.getElementById('userForm');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const gameID = form.gameID.value.trim();
+      const userName = form.userName.value.trim();
+
+      if(!gameID || !userName){
+        alert('කරුණාකර සියලු තොරතුරු ඇතුළත් කරන්න.');
+        return;
+      }
+
+      // Save data to sessionStorage to use on next page
+      sessionStorage.setItem('gameID', gameID);
+      sessionStorage.setItem('userName', userName);
+
+      // Redirect to jem selection page
+      window.location.href = 'jem_select.html';
+    });
+  </script>
+</body>
+</html>
